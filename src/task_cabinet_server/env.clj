@@ -2,9 +2,13 @@
   (:require [environ.core :refer [env]]
             [taoensso.timbre :as timbre]
             [clojure.java.io :as io]
-            [integrant.core :as ig]
-            [integrant.repl :as igr]))
-
+            [integrant.core :as ig]))
 
 (defmethod ig/init-key ::env [_ _]
-  {:dsatabase-url (env :database-url)})
+  (timbre/info "loading environment via environ")
+  (let [database-url (env :database-url)
+        running (if-let [running (env :env)] running "prod")]
+    (timbre/info "running in " (name running))
+    (timbre/info "database-url" database-url)
+    {:database-url database-url
+     :running running}))

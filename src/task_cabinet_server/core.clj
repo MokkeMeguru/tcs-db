@@ -7,6 +7,8 @@
             [integrant.repl :as igr]))
 
 
+(timbre/set-level! :info)
+
 (def config-file
   "config.edn")
 
@@ -18,13 +20,25 @@
       (doto
           ig/load-namespaces)))
 
+;; (load-config config-file)
+
 (defn start []
   (igr/set-prep! (constantly (load-config config-file)))
   (igr/prep)
   (igr/init))
 
+(defn stop []
+  (igr/halt))
+
+(defn restart []
+  (igr/reset))
+
+(defn restart-all []
+  (igr/reset-all))
 
 (defn -main
-  "I don't do a whole lot ... yet."
   [& args]
-  (println "Hello, World!"))
+  (timbre/set-level! :info)
+  (-> config-file
+      load-config
+      ig/init))
