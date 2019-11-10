@@ -1,6 +1,5 @@
 # task-cabinet-server
-
-FIXME: description
+ref [doc/intro.md](intro.md)
 
 ## Installation
 
