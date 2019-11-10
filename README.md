@@ -1,5 +1,5 @@
 # task-cabinet-server
-ref [doc/intro.md](intro.md)
+ref [doc/intro.md](doc/intro.md)
 
 ## Installation
 
