@@ -1,4 +1,4 @@
-4CREATE TABLE task (
+CREATE TABLE task (
   id SERIAL PRIMARY KEY,
   name VARCHAR(255) NOT NULL,
   description VARCHAR(511),
