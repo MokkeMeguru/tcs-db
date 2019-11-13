@@ -17,16 +17,16 @@
   task_cabinet_server.Boundary.utils.sql.Boundary
   (get-users [{:keys [spec]}]
     (let [scl (sql/format
-               {:select [:users/id :users/name]
+               {:select [:users/id :users/name :users/email]
                 :from [:users]})]
       (utils/run-sql spec scl false)))
-  (get-user [{:keys [spec]} {:keys [users/name users/password]}]
+  (get-user [{:keys [spec]} {:keys [users/email]}]
     (let [scl (sql/format
                {:select [:*]
                 :from [:users]
-                :where  [:= :users/name name]})
-          candidate (utils/run-sql spec scl false)]
-      (utils/check-identity password candidate)))
+                :where  [:= :users/email email]})
+          res (utils/run-sql spec scl true)]
+      res))
   (create-user [{:keys [spec]} user]
     (let [scl (sql/format
                (-> (h/insert-into :users)
@@ -56,30 +56,43 @@
 
 
 ;; for debug
-(defonce inst (task-cabinet-server.Boundary.utils.sql/->Boundary {:datasource (hikari-cp.core/make-datasource {:jdbc-url (environ.core/env :database-url)})}))
-
-;; (:users/id
-;;  (first
-;;    (get-user inst {:users/name "meguru"
-;;                    :users/password "emacs"})))
-
-;; (get-user inst {:users/name "meguru"
-;;                 :users/password "emacss"})
-
-(defonce test-creation
-  (create-user inst {:users/name "meguru"
-                     :users/password (utils/hash-password "emacs")}))
+;; (defonce inst (task-cabinet-server.Boundary.utils.sql/->Boundary {:datasource (hikari-cp.core/make-datasource {:jdbc-url (environ.core/env :database-url)})}))
 
 
+;; ;; found return all columns
+;; (get-user inst
+;;           {:users/email  "test@gmail.com"})
+
+;; ;; not found return nil
+;; (get-user inst
+;;           {:users/email  "test2@gmail.com"})
+
+
+;; (defonce test-creation
+;;   (create-user inst {:users/name "meguru"
+;;                      :users/email "test@gmail.com"
+;;                      :users/password (utils/hash-password "emacs")}))
+
+;; conflicts raise error
+;; (create-user inst {:users/name "meguru"
+;;                    :users/email "test@gmail.com"
+;;                    :users/password (utils/hash-password "emacs")})
+
+;; update success return 1
+;; update fail  return 0
 ;; (:next.jdbc/update-count
 ;;  (update-password inst
-;;                   {:users/id 1 :users/password (utils/hash-password "emacs")}))
-
+;;                   {:users/id 2 :users/password (utils/hash-password "test")}))
 
 ;; (get-users inst)
 
-;; (delete-user? inst {:users/id 1})
 
-(get-user inst {:users/name "meguru" :users/password "emacs"})
+;; update success return 1
+;; update fail return 0
+;; (:next.jdbc/update-count
+;;  (delete-user inst {:users/id 2}))
 
-;; (erase-user inst {:users/id 4})
+;; success 1
+;; fail 0
+;; (erase-user inst {:users/id 1})
+
