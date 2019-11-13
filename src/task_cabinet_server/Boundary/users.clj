@@ -1,6 +1,7 @@
 (ns task-cabinet-server.Boundary.users
   (:require [next.jdbc :as jdbc]
             [honeysql.core :as sql]
+            [next.jdbc.sql :as njs]
             [honeysql.helpers :as h]
             [task-cabinet-server.Boundary.utils.util :as utils]
             [task-cabinet-server.Boundary.utils.sql :as s]))
