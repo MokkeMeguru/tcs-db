@@ -4,6 +4,7 @@
    [clj-time.core :as t]
    [clj-time.coerce :as tc]
    [clojure.string :as string]
+   [next.jdbc.sql :as njs]
    [buddy.hashers :as hashers]
    [camel-snake-kebab.core :refer [->kebab-case ->snake_case]]
    [camel-snake-kebab.extras :refer [transform-keys]]))
@@ -39,3 +40,22 @@
     (if one?
       (jdbc/execute-one! conn sql-command-list)
       (jdbc/execute! conn sql-command-list))))
+
+(defn insert! [spec table-key m]
+  (with-open [conn (jdbc/get-connection (:datasource spec))]
+    (njs/insert! conn table-key m)))
+
+(defn update! [spec table-key m idm]
+  (with-open [conn (jdbc/get-connection (:datasource spec))]
+    (njs/update! conn table-key m idm)))
+
+(defn delete! [spec table-key idm]
+  (with-open [conn (jdbc/get-connection (:datasource spec))]
+    (njs/delete! conn table-key idm)))
+
+(defn find-by-m [spec table-key m]
+  (with-open [conn (jdbc/get-connection (:datasource spec))]
+    (njs/find-by-keys conn table-key m)))
+
+(defn get-by-id [spec table-key id]
+  (with))
